@@ -1,9 +1,22 @@
 from langchain.retrievers import AmazonKendraRetriever
 from langchain.chains import ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
-from langchain import OpenAI
+from langchain.llms  import AzureOpenAI
 import sys
 import os
+
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+deployment_name = 'gpt-35-turbo-ronald' #'REPLACE_WITH_YOUR_DEPLOYMENT_NAME' #This will correspond to the custom name you chose for your deployment when you deployed a model. 
+
+
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_VERSION"] = "2023-05-15"
+os.environ["OPENAI_API_BASE"] = os.getenv("AZURE_OPENAI_ENDPOINT")
+os.environ["OPENAI_API_KEY"] = os.getenv("AZURE_OPENAI_KEY")
 
 MAX_HISTORY_LENGTH = 5
 
@@ -11,9 +24,19 @@ def build_chain():
   region = os.environ["AWS_REGION"]
   kendra_index_id = os.environ["KENDRA_INDEX_ID"]
 
-  llm = OpenAI(batch_size=5, temperature=0, max_tokens=300)
+  llm = AzureOpenAI(batch_size=5, temperature=0, max_tokens=300, deployment_name=deployment_name)
       
-  retriever = AmazonKendraRetriever(index_id=kendra_index_id, region_name=region)
+  retriever = AmazonKendraRetriever(
+                index_id=kendra_index_id, 
+                region_name=region, 
+                attribute_filter={
+                    "EqualsTo": {      
+                        "Key": "_language_code",
+                        "Value": {
+                            "StringValue": "nl"
+                            }
+                        }
+                    })
 
   prompt_template = """
   The following is a friendly conversation between a human and an AI. 

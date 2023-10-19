@@ -1,5 +1,6 @@
 *.egg-info/
-
+.env
+kendra_retriever_samples/.venv
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -86,3 +87,4 @@ dmypy.json
 
 # venv files
 env*
+kendra_retriever_samples/.venv/bin/activate
