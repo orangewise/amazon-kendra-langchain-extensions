@@ -39,26 +39,25 @@ def build_chain():
                     })
 
   prompt_template = """
-  The following is a friendly conversation between a human and an AI. 
-  The AI is talkative and provides lots of specific details from its context.
-  If the AI does not know the answer to a question, it truthfully says it 
-  does not know.
-  {context}
-  Instruction: Based on the above documents, provide a detailed answer for, {question} Answer "don't know" 
-  if not present in the document. 
-  Solution:"""
+Het volgende is een vriendelijk gesprek tussen een mens en een AI.
+De AI is spraakzaam en geeft veel specifieke details vanuit zijn context.
+Als de AI het antwoord op een vraag niet weet, zegt hij eerlijk dat hij het niet weet.
+{context}
+Instructie: Geef op basis van de bovenstaande documenten een gedetailleerd antwoord op de vraag: {question}. Antwoord "weet ik niet" als het niet in het document aanwezig is.
+Oplossing:
+"""
   PROMPT = PromptTemplate(
       template=prompt_template, input_variables=["context", "question"]
   )
 
   condense_qa_template = """
-  Given the following conversation and a follow up question, rephrase the follow up question 
-  to be a standalone question.
+Gegeven het volgende gesprek en een vervolgvraag, herschrijf de vervolgvraag zodat het een op zichzelf staande vraag wordt.
 
-  Chat History:
-  {chat_history}
-  Follow Up Input: {question}
-  Standalone question:"""
+Chatgeschiedenis:
+{chat_history}
+Vervolginvoer: {question}
+Op zichzelf staande vraag:
+"""
   standalone_question_prompt = PromptTemplate.from_template(condense_qa_template)
 
   qa = ConversationalRetrievalChain.from_llm(
